@@ -41,8 +41,8 @@ export default function Home() {
     <Masonry
       // Provides the data for our grid items
       items={imagesWithLayout}
-      // Adds 8px of space between the grid cells
-      columnGutter={8}
+      // No border.
+      columnGutter={0}
       // Sets the minimum column width to 172px
       columnWidth={512}
       // Pre-renders 5 windows worth of content
