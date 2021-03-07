@@ -1,20 +1,29 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import fs from "fs";
+import path from "path";
 import imageSize from "image-size";
 
 const fsPromises = fs.promises;
 
-async function listDir() {
-  try {
-    return fsPromises.readdir("./public/");
-  } catch (err) {
-    console.error("Error occured while reading directory!", err);
-  }
-}
+const getAllFiles = function (dirPath, arrayOfFiles) {
+  const files = fs.readdirSync(dirPath);
+
+  arrayOfFiles = arrayOfFiles || [];
+
+  files.forEach(function (file) {
+    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+      arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles);
+    } else {
+      arrayOfFiles.push(path.join(__dirname, dirPath, "/", file));
+    }
+  });
+
+  return arrayOfFiles;
+};
 
 export default async (req, res) => {
-  const files = await listDir();
+  const files = await getAllFiles("./public/", []);
 
   res.status(200).json(
     files
@@ -24,7 +33,10 @@ export default async (req, res) => {
           file.endsWith("png") ||
           file.endsWith("jpeg") ||
           file.endsWith("gif") ||
-          file.endsWith("mp4")
+          file.endsWith("mp4") ||
+          file.endsWith("avi") ||
+          file.endsWith("webm") ||
+          file.endsWith("flv")
         );
       })
       .map((file) => {
@@ -35,7 +47,7 @@ export default async (req, res) => {
         //const h = Math.round(size.height / 300) + 1;
 
         return {
-          i: file,
+          i: file.replace(/^\/public/g, ""),
         };
       })
   );

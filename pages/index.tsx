@@ -12,6 +12,9 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 // var i = 0;
 // const items = Array.from(Array(5000), () => ({ id: i++ }));
 
+function isVideo(path: string) {
+  return path.endsWith("mp4") || path.endsWith("avi") || path.endsWith("flv");
+}
 const MasonryCard = ({ index, data: { id }, width }) => (
   <div>
     <div>Index: {index}</div>
@@ -51,7 +54,7 @@ export default function Home() {
 }
 
 const FakeCard = ({ data: { id, name, i } }) => {
-  if (i.endsWith("mp4")) {
+  if (isVideo(i)) {
     return (
       <div className="fill">
         <video width="100%" autoPlay={true} loop={true} muted={true} src={i} />
